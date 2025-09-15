@@ -38,6 +38,13 @@ function AIPMAWebsite() {
   const [miembros, setMiembros] = useState([])
   const [loading, setLoading] = useState(true)
 
+  // === NUEVO: estado para formularios ===
+  const [showMemberForm, setShowMemberForm] = useState(false)
+  const [formMember, setFormMember] = useState({
+    nombre: '', organizacion: '', especialidad: '', pais: '', tipo: 'periodista', fechaIngreso: ''
+  })
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+
   // formatters memoizados
   const fmtLong = useMemo(() => new Intl.DateTimeFormat('es-ES', {
     year: 'numeric',
@@ -166,6 +173,113 @@ function AIPMAWebsite() {
     } catch (error) {
       console.error('Error:', error)
       alert('Error al enviar el mensaje')
+    }
+  }
+
+  // === NUEVO: crear miembro ===
+  const handleCreateMember = async (e) => {
+    e.preventDefault()
+    const payload = {
+      ...formMember,
+      id: (globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)),
+      fechaIngreso: formMember.fechaIngreso ? new Date(formMember.fechaIngreso) : new Date(),
+      fechaCreacion: new Date()
+    }
+    try {
+      if (supabase) {
+        const { data, error } = await supabase.from('miembros').insert([payload]).select('*')
+        if (!error) {
+          const nuevo = Array.isArray(data) && data[0] ? data[0] : payload
+          setMiembros((prev) => [nuevo, ...prev])
+          setShowMemberForm(false)
+          setFormMember({ nombre:'', organizacion:'', especialidad:'', pais:'', tipo:'periodista', fechaIngreso:'' })
+          alert('Solicitud enviada ✅')
+          return
+        }
+      }
+      // fallback API
+      const res = await fetch('/api/miembros', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      if (res.ok) {
+        const { miembro } = await res.json()
+        setMiembros((prev) => [miembro ?? payload, ...prev])
+        setShowMemberForm(false)
+        setFormMember({ nombre:'', organizacion:'', especialidad:'', pais:'', tipo:'periodista', fechaIngreso:'' })
+        alert('Solicitud enviada ✅')
+      } else {
+        alert('No se pudo enviar la solicitud')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error creando miembro')
+    }
+  }
+
+  // === NUEVO: newsletter ===
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault()
+    if (!newsletterEmail) return
+    const entry = { nombre: null, email: newsletterEmail, mensaje: 'newsletter', tipo: 'newsletter', fecha: new Date(), leido: false }
+    try {
+      if (supabase) {
+        const { error } = await supabase.from('mensajes').insert([entry])
+        if (!error) {
+          setNewsletterEmail('')
+          alert('Suscripción realizada ✅')
+          return
+        }
+      }
+      const res = await fetch('/api/contacto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: 'Newsletter', email: newsletterEmail, mensaje: 'Suscripción newsletter' })
+      })
+      if (res.ok) {
+        setNewsletterEmail('')
+        alert('Suscripción realizada ✅')
+      } else {
+        alert('No se pudo suscribir')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error en la suscripción')
+    }
+  }
+
+  // === NUEVO: registro a evento (guarda intención) ===
+  const handleEventRegister = async (evento) => {
+    const entry = {
+      nombre: null,
+      email: null,
+      mensaje: `registro_evento:${evento?.id ?? ''}`,
+      tipo: 'registro_evento',
+      fecha: new Date(),
+      leido: false
+    }
+    try {
+      if (supabase) {
+        const { error } = await supabase.from('mensajes').insert([entry])
+        if (!error) {
+          alert('Registro solicitado ✅ (te contactaremos)')
+          return
+        }
+      }
+      const res = await fetch('/api/contacto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: 'Registro Evento', email: '', mensaje: `Interés en evento: ${evento?.titulo ?? ''}` })
+      })
+      if (res.ok) {
+        alert('Registro solicitado ✅ (te contactaremos)')
+      } else {
+        alert('No se pudo registrar')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error al registrar')
     }
   }
 
@@ -330,7 +444,7 @@ function AIPMAWebsite() {
             <p className="text-muted-foreground">Mantente al día con las novedades del mundo del periodismo</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {noticias.slice(0, 3).map((noticia) => (
               <Card key={noticia.id} className="hover:shadow-lg transition-shadow border-primary/20 hover:border-primary/40">
                 <CardHeader>
@@ -534,7 +648,7 @@ function AIPMAWebsite() {
                       <span className="text-sm text-muted-foreground">
                         {evento.capacidad} participantes máx.
                       </span>
-                      <Button size="sm">Registrarse</Button>
+                      <Button size="sm" onClick={() => handleEventRegister(evento)}>Registrarse</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -601,8 +715,47 @@ function AIPMAWebsite() {
                     ))}
                   </div>
                 </div>
-                <div className="mt-6">
-                  <Button className="w-full">Solicitar Membresía</Button>
+                <div className="mt-6 space-y-4">
+                  {/* Botón existente + toggle formulario */}
+                  <Button className="w-full" onClick={() => setShowMemberForm(v => !v)}>
+                    {showMemberForm ? 'Ocultar formulario' : 'Solicitar Membresía'}
+                  </Button>
+
+                  {showMemberForm && (
+                    <form onSubmit={handleCreateMember} className="grid gap-3 border rounded-lg p-4">
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <Input placeholder="Nombre completo" required
+                          value={formMember.nombre}
+                          onChange={(e)=>setFormMember(s=>({...s,nombre:e.target.value}))}/>
+                        <Input placeholder="Organización"
+                          value={formMember.organizacion}
+                          onChange={(e)=>setFormMember(s=>({...s,organizacion:e.target.value}))}/>
+                        <Input placeholder="Especialidad"
+                          value={formMember.especialidad}
+                          onChange={(e)=>setFormMember(s=>({...s,especialidad:e.target.value}))}/>
+                        <Input placeholder="País"
+                          value={formMember.pais}
+                          onChange={(e)=>setFormMember(s=>({...s,pais:e.target.value}))}/>
+                        <select
+                          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                          value={formMember.tipo}
+                          onChange={(e)=>setFormMember(s=>({...s,tipo:e.target.value}))}
+                        >
+                          <option value="periodista">Periodista</option>
+                          <option value="productor">Productor</option>
+                          <option value="editor">Editor</option>
+                          <option value="director">Director</option>
+                        </select>
+                        <Input type="date" placeholder="Fecha de ingreso"
+                          value={formMember.fechaIngreso}
+                          onChange={(e)=>setFormMember(s=>({...s,fechaIngreso:e.target.value}))}/>
+                      </div>
+                      <div className="flex gap-2 justify-end">
+                        <Button type="button" variant="outline" onClick={()=>setShowMemberForm(false)}>Cancelar</Button>
+                        <Button type="submit">Enviar solicitud</Button>
+                      </div>
+                    </form>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -778,10 +931,17 @@ function AIPMAWebsite() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex space-x-2">
-                  <Input placeholder="tu@email.com" className="flex-1" />
-                  <Button>Suscribirse</Button>
-                </div>
+                <form className="flex space-x-2" onSubmit={handleNewsletterSubmit}>
+                  <Input
+                    placeholder="tu@email.com"
+                    className="flex-1"
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(e)=>setNewsletterEmail(e.target.value)}
+                    required
+                  />
+                  <Button type="submit">Suscribirse</Button>
+                </form>
               </CardContent>
             </Card>
 
