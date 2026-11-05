@@ -938,24 +938,39 @@ function AIPMAWebsite() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <MailIcon className="h-5 w-5 text-primary mt-0.5" />
+                  <MailIcon className="h-5 w-5 text-primary mt-0.5" aria-hidden="true" />
                   <div>
                     <p className="font-medium">Correo Electrónico</p>
-                    <p className="text-muted-foreground">contacto@aipma.org</p>
+                    <a href="mailto:aipma070281@gmail.com" className="text-primary hover:underline break-all">
+                      aipma070281@gmail.com
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <Globe className="h-5 w-5 text-primary mt-0.5" />
+                  <Globe className="h-5 w-5 text-primary mt-0.5" aria-hidden="true" />
                   <div>
                     <p className="font-medium">Sitio Web</p>
-                    <p className="text-muted-foreground">www.aipma.org</p>
+                    <a href="https://aipma.pro" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                      www.aipma.pro
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <UsersIcon className="h-5 w-5 text-primary mt-0.5" />
+                  <MailIcon className="h-5 w-5 text-primary mt-0.5" aria-hidden="true" />
                   <div>
-                    <p className="font-medium">Redes Sociales</p>
-                    <p className="text-muted-foreground">@AIPMA_Oficial</p>
+                    <p className="font-medium">Teléfono</p>
+                    <a href="tel:+15708027308" className="text-primary hover:underline">
+                      +1 570-802-7308
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Globe className="h-5 w-5 text-primary mt-0.5" aria-hidden="true" />
+                  <div>
+                    <p className="font-medium">Dirección institucional</p>
+                    <address className="not-italic text-muted-foreground">
+                      1 Broad Street, Hazleton, Pennsylvania, Estados Unidos
+                    </address>
                   </div>
                 </div>
               </CardContent>
