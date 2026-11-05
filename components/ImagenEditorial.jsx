@@ -54,6 +54,7 @@ export default function ImagenEditorial({
   categoria = '',
   className = 'h-48 sm:h-56',
   prioridad = false,
+  ilustrativa = false,
 }) {
   const imagenPropia = typeof imagen === 'string' &&
     (/^https:\/\//i.test(imagen.trim()) || /^\/(?!\/)/.test(imagen.trim()))
@@ -66,7 +67,7 @@ export default function ImagenEditorial({
   const usarOriginal = Boolean(imagenPropia) && !principalFallida
   const src = usarOriginal ? imagenPropia : alternativa
   const noDisponible = alternativaFallida && !usarOriginal
-  const esIlustrativa = !usarOriginal
+  const esIlustrativa = ilustrativa || !usarOriginal
 
   return (
     <figure className={`relative w-full overflow-hidden bg-gradient-to-br from-blue-950 via-blue-800 to-sky-600 ${className}`}>
