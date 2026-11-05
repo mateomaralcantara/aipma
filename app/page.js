@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,7 +34,14 @@ const navigation = [
 ]
 
 function AIPMAWebsite() {
-  const [activeSection, setActiveSection] = useState('inicio')
+  // La URL es la fuente de verdad para la sección activa.
+  const pathname = usePathname() || '/'
+  const router = useRouter()
+  const activeSection = pathname === '/' ? 'inicio' : pathname.split('/')[1]
+
+  const setActiveSection = useCallback((seccion) => {
+    router.push(seccion === 'inicio' ? '/' : `/${seccion}`)
+  }, [router])
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [noticias, setNoticias] = useState([])
   const [eventos, setEventos] = useState([])
@@ -303,11 +312,16 @@ function AIPMAWebsite() {
               <Button
                 key={item.id}
                 variant={activeSection === item.id ? "default" : "ghost"}
-                onClick={() => setActiveSection(item.id)}
                 className="text-sm"
+                asChild
               >
-                <item.icon className="h-4 w-4 mr-2" />
-                {item.label}
+                <Link
+                  href={item.id === 'inicio' ? '/' : `/${item.id}`}
+                  aria-current={activeSection === item.id ? 'page' : undefined}
+                >
+                  <item.icon className="h-4 w-4 mr-2" />
+                  {item.label}
+                </Link>
               </Button>
             ))}
           </nav>
@@ -330,14 +344,17 @@ function AIPMAWebsite() {
                 <Button
                   key={item.id}
                   variant={activeSection === item.id ? "default" : "ghost"}
-                  onClick={() => {
-                    setActiveSection(item.id)
-                    setMobileMenuOpen(false)
-                  }}
                   className="justify-start"
+                  asChild
                 >
-                  <item.icon className="h-4 w-4 mr-2" />
-                  {item.label}
+                  <Link
+                    href={item.id === 'inicio' ? '/' : `/${item.id}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    aria-current={activeSection === item.id ? 'page' : undefined}
+                  >
+                    <item.icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </Link>
                 </Button>
               ))}
             </nav>
