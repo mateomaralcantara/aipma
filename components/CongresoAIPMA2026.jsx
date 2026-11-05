@@ -1,4 +1,5 @@
-import ImagenEditorial, { FOTOS_EDITORIALES } from '@/components/ImagenEditorial'
+import ImagenEditorial from '@/components/ImagenEditorial'
+import { FOTOS_EDITORIALES } from '@/lib/fotos-editoriales'
 
 const jueves = [
   { hora: '11:00 a. m.*', titulo: 'Recepción de las delegaciones' },
