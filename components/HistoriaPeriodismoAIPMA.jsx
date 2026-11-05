@@ -1,4 +1,5 @@
-import ImagenEditorial, { FOTOS_EDITORIALES } from '@/components/ImagenEditorial'
+import ImagenEditorial from '@/components/ImagenEditorial'
+import { FOTOS_EDITORIALES } from '@/lib/fotos-editoriales'
 
 const etapas = [
   {
