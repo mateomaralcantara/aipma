@@ -1,3 +1,6 @@
+import ImagenEditorial from '@/components/ImagenEditorial'
+import { FOTOS_EDITORIALES } from '@/lib/fotos-editoriales'
+
 const jueves = [
   { hora: '11:00 a. m.*', titulo: 'Recepción de las delegaciones' },
   { hora: '12:30 p. m.', titulo: 'Reconfirmación de asistencia' },
@@ -64,6 +67,8 @@ export default function CongresoAIPMA2026() {
         </p>
         <p className="mt-4 text-sm text-blue-100">Itinerario oficial de actividades · Hazleton, Pennsylvania, Estados Unidos</p>
       </div>
+
+      <ImagenEditorial imagen={FOTOS_EDITORIALES.conferencia} ilustrativa titulo="Congreso Anual de Periodismo Avanzado" className="h-52 sm:h-72" />
 
       <div className="space-y-7 bg-gradient-to-b from-blue-50/70 to-white px-4 py-7 sm:px-8 sm:py-9">
         <Jornada numero="01" fecha="Jueves 10 de diciembre de 2026" actividades={jueves} />

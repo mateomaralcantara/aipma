@@ -13,6 +13,8 @@ import { CalendarIcon, UsersIcon, NewspaperIcon, Globe, MailIcon, MenuIcon, XIco
 import CongresoAIPMA2026 from '@/components/CongresoAIPMA2026'
 import HistoriaPeriodismoAIPMA from '@/components/HistoriaPeriodismoAIPMA'
 import AgendaPeriodismoAIPMA from '@/components/AgendaPeriodismoAIPMA'
+import ImagenEditorial from '@/components/ImagenEditorial'
+import { imagenDeRegistro } from '@/lib/fotos-editoriales'
 
 // ---- supabase client (solo si hay envs públicas) ----
 const supabase =
@@ -48,6 +50,9 @@ function AIPMAWebsite() {
   const [noticias, setNoticias] = useState([])
   const [eventos, setEventos] = useState([])
   const [miembros, setMiembros] = useState([])
+  // Cifra institucional proporcionada por la organización; no se infiere
+  // del número de registros públicos del directorio.
+  const miembrosInstitucionales = 850
   const [loading, setLoading] = useState(true)
 
   // === NUEVO: estado para formularios ===
@@ -388,6 +393,9 @@ function AIPMAWebsite() {
             La Alianza Internacional de Periodismo y Medios Audiovisuales representa la pluralidad,
             ética y credibilidad de la voz global del periodismo.
           </p>
+          <p className="mb-7 text-base font-semibold text-primary">
+            Una comunidad internacional de {miembrosInstitucionales} miembros
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" onClick={() => setActiveSection('nosotros')} className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all">
               Conoce Más Sobre Nosotros
@@ -466,7 +474,8 @@ function AIPMAWebsite() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {noticias.slice(0, 3).map((noticia) => (
-              <Card key={noticia.id} className="hover:shadow-lg transition-shadow border-primary/20 hover:border-primary/40">
+              <Card key={noticia.id} className="overflow-hidden hover:shadow-lg transition-shadow border-primary/20 hover:border-primary/40">
+                <ImagenEditorial imagen={imagenDeRegistro(noticia)} titulo={noticia.titulo} categoria={noticia.categoria} className="h-44" />
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">{noticia.categoria}</Badge>
@@ -560,8 +569,8 @@ function AIPMAWebsite() {
                     <div className="text-sm text-muted-foreground">Países Representados</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-primary">500+</div>
-                    <div className="text-sm text-muted-foreground">Miembros Activos</div>
+                    <div className="text-2xl font-bold text-primary">{miembrosInstitucionales}</div>
+                    <div className="text-sm text-muted-foreground">Miembros registrados</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-primary">100+</div>
@@ -597,7 +606,8 @@ function AIPMAWebsite() {
           <div className="grid gap-8">
             {noticias.length > 0 ? (
               noticias.map((noticia) => (
-                <Card key={noticia.id} className="hover:shadow-lg transition-shadow">
+                <Card key={noticia.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <ImagenEditorial imagen={imagenDeRegistro(noticia)} titulo={noticia.titulo} categoria={noticia.categoria} className="h-52 sm:h-64" />
                   <CardHeader>
                     <div className="flex items-center justify-between mb-4">
                       <Badge variant="secondary">{noticia.categoria}</Badge>
@@ -654,7 +664,8 @@ function AIPMAWebsite() {
           <div className="grid md:grid-cols-2 gap-8">
             {eventos.length > 0 ? (
               eventos.map((evento) => (
-                <Card key={evento.id} className="hover:shadow-lg transition-shadow">
+                <Card key={evento.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <ImagenEditorial imagen={imagenDeRegistro(evento)} titulo={evento.titulo} categoria={evento.tipo} className="h-52" />
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <Badge variant={evento.tipo === 'conferencia' ? 'default' : 'secondary'}>
@@ -795,8 +806,9 @@ function AIPMAWebsite() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-primary">{miembros.length}</div>
-                    <div className="text-sm text-muted-foreground">Miembros Activos</div>
+                    <div className="text-3xl font-bold text-primary">{miembrosInstitucionales}</div>
+                    <div className="text-sm text-muted-foreground">Miembros registrados</div>
+                    <p className="mt-1 text-xs text-muted-foreground">Cifra institucional; el directorio muestra únicamente los perfiles publicados.</p>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-primary">50+</div>
