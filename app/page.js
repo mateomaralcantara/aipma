@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, UsersIcon, NewspaperIcon, Globe, MailIcon, MenuIcon, XIcon } from 'lucide-react'
+import CongresoAIPMA2026 from '@/components/CongresoAIPMA2026'
 
 // ---- supabase client (solo si hay envs públicas) ----
 const supabase =
@@ -618,6 +619,8 @@ function AIPMAWebsite() {
             Únete a nuestros eventos internacionales, seminarios y talleres para profesionales del periodismo
           </p>
         </div>
+
+        <CongresoAIPMA2026 />
 
         {loading ? (
           <div className="text-center py-12">
