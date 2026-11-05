@@ -1,3 +1,5 @@
+import ImagenEditorial, { FOTOS_EDITORIALES } from '@/components/ImagenEditorial'
+
 const etapas = [
   {
     anio: '2021',
@@ -45,6 +47,14 @@ const etapas = [
 
 export default function HistoriaPeriodismoAIPMA({ resumen = false }) {
   const visibles = resumen ? etapas.slice(-3) : etapas
+  const imagenesPorAnio = {
+    2021: FOTOS_EDITORIALES.prensa,
+    2022: FOTOS_EDITORIALES.investigacion,
+    2023: FOTOS_EDITORIALES.taller,
+    2024: FOTOS_EDITORIALES.digital,
+    2025: FOTOS_EDITORIALES.equipo,
+    2026: FOTOS_EDITORIALES.conferencia,
+  }
 
   return (
     <section aria-labelledby="historia-periodismo-aipma" className="my-12 rounded-2xl border border-blue-100 bg-white p-5 shadow-sm sm:p-8">
@@ -60,13 +70,16 @@ export default function HistoriaPeriodismoAIPMA({ resumen = false }) {
       </p>
       <div className="mt-7 grid gap-4 md:grid-cols-2">
         {visibles.map(({ anio, eje, descripcion, lectura, enlace }) => (
-          <article key={anio} className="rounded-xl border border-slate-200 bg-slate-50/70 p-5">
+          <article key={anio} className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/70">
+            <ImagenEditorial imagen={imagenesPorAnio[anio]} ilustrativa titulo={eje} className="h-44" />
+            <div className="p-5">
             <span className="text-2xl font-extrabold text-blue-800">{anio}</span>
             <h3 className="mt-1 text-lg font-bold text-slate-900">{eje}</h3>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">{descripcion}</p>
             <a href={enlace} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex text-xs font-semibold text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-600">
               Fuente: {lectura}
             </a>
+            </div>
           </article>
         ))}
       </div>
