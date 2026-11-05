@@ -1,3 +1,5 @@
+import ImagenEditorial, { FOTOS_EDITORIALES } from '@/components/ImagenEditorial'
+
 // Propuesta de agenda editorial: una actividad documentada y cinco iniciativas
 // sujetas a aprobación institucional. No anunciar propuestas como confirmadas.
 export const agendaPeriodismo = [
@@ -64,6 +66,15 @@ export const agendaPeriodismo = [
 ]
 
 export default function AgendaPeriodismoAIPMA() {
+  const imagenesActividades = [
+    FOTOS_EDITORIALES.taller,
+    FOTOS_EDITORIALES.conferencia,
+    FOTOS_EDITORIALES.equipo,
+    FOTOS_EDITORIALES.datos,
+    FOTOS_EDITORIALES.prensa,
+    FOTOS_EDITORIALES.digital,
+  ]
+
   return (
     <section aria-labelledby="agenda-aipma-2027" className="mb-12 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm sm:p-8">
       <p className="mb-2 text-xs font-bold uppercase tracking-widest text-blue-800">
@@ -80,7 +91,9 @@ export default function AgendaPeriodismoAIPMA() {
         {agendaPeriodismo.map((actividad, index) => {
           const documentada = actividad.estado === 'programado'
           return (
-            <article key={actividad.id} className="flex flex-col rounded-xl border border-slate-200 bg-slate-50/70 p-5">
+            <article key={actividad.id} className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-slate-50/70">
+              <ImagenEditorial imagen={imagenesActividades[index]} ilustrativa titulo={actividad.titulo} className="h-48" />
+              <div className="flex flex-1 flex-col p-5">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-xs font-extrabold tracking-wide text-blue-900">{actividad.etiqueta}</span>
                 <span className={documentada
@@ -95,6 +108,7 @@ export default function AgendaPeriodismoAIPMA() {
               <p className="mt-2 text-xs leading-relaxed text-slate-600">Resultado previsto: {actividad.resultado}</p>
               {documentada && <a href="#congreso-aipma-2026" className="mt-4 text-xs font-semibold text-blue-800 underline underline-offset-2">Ver programa del congreso</a>}
               {!documentada && <p className="mt-4 text-xs text-slate-500">Fecha tentativa; no existe convocatoria abierta.</p>}
+              </div>
             </article>
           )
         })}
