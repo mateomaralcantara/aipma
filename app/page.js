@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, UsersIcon, NewspaperIcon, Globe, MailIcon, MenuIcon, XIcon } from 'lucide-react'
 import CongresoAIPMA2026 from '@/components/CongresoAIPMA2026'
+import HistoriaPeriodismoAIPMA from '@/components/HistoriaPeriodismoAIPMA'
+import AgendaPeriodismoAIPMA from '@/components/AgendaPeriodismoAIPMA'
 
 // ---- supabase client (solo si hay envs públicas) ----
 const supabase =
@@ -497,6 +499,7 @@ function AIPMAWebsite() {
               La voz global del periodismo profesional y ético
             </p>
           </div>
+          <HistoriaPeriodismoAIPMA />
 
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div>
@@ -583,6 +586,8 @@ function AIPMAWebsite() {
           </p>
         </div>
 
+        <HistoriaPeriodismoAIPMA resumen />
+
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
@@ -638,6 +643,7 @@ function AIPMAWebsite() {
         </div>
 
         <CongresoAIPMA2026 />
+        <AgendaPeriodismoAIPMA />
 
         {loading ? (
           <div className="text-center py-12">
