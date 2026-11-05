@@ -13,7 +13,8 @@ import { CalendarIcon, UsersIcon, NewspaperIcon, Globe, MailIcon, MenuIcon, XIco
 import CongresoAIPMA2026 from '@/components/CongresoAIPMA2026'
 import HistoriaPeriodismoAIPMA from '@/components/HistoriaPeriodismoAIPMA'
 import AgendaPeriodismoAIPMA from '@/components/AgendaPeriodismoAIPMA'
-import ImagenEditorial, { imagenDeRegistro } from '@/components/ImagenEditorial'
+import ImagenEditorial from '@/components/ImagenEditorial'
+import { imagenDeRegistro } from '@/lib/fotos-editoriales'
 
 // ---- supabase client (solo si hay envs públicas) ----
 const supabase =
